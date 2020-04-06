@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc, FixedOffset, TimeZone, Local};
+use chrono::{DateTime, Utc, FixedOffset, Local};
 use itertools::Itertools;
 
 pub struct Date {
@@ -8,11 +8,6 @@ pub struct Date {
 impl Date {
     pub fn new(gmt_offset_hours: Option<f32>) -> Date {
         let now = Utc::now();
-        // let test: DateTime<Local> = now
-        //     .with_timezone(&Local)
-        //     .offset();
-        // let t = FixedOffset::east(1000);
-        // let sauce: String = now.with_timezone(&t);
         let converted_time = match gmt_offset_hours {
             None => {
                 let local_tz = now.with_timezone(&Local);
