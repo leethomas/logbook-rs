@@ -11,6 +11,10 @@ pub struct LogbookConf {
 }
 
 impl std::default::Default for LogbookConf {
+    // This is never called explicitly, only by confy when
+    // an existing config is not found on the machine. The
+    // config location setup code is in here but it should
+    // probably be extracted soon.
     fn default() -> Self {
         print!("Where will your logbook be? ");
         let _ = io::stdout().flush();
