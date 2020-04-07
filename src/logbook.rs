@@ -1,3 +1,4 @@
+use chrono::Utc;
 use confy;
 use std::path::{Path, PathBuf};
 use crate::config;
@@ -12,7 +13,7 @@ impl <'a> Logbook {
     pub fn run(options: Options) -> Result<(), String> {
         let config: config::LogbookConf = confy::load(crate::APP_NAME)
             .map_err(|e| format!("{:?}", e))?;
-        let date = entry::Date::new(options.utc_offset);
+        let date = entry::Date::new(&Utc::now(), &options.utc_offset);
         let logfile_path = Self::current_logfile(&date, config.logbook_dir.as_path());
         let entry = Self::create_entry(date, options);
         let logfile = OpenOptions::new()

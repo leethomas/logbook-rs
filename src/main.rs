@@ -39,6 +39,7 @@ fn main() {
     }
 }
 
+/// Transforms raw CLI inputs into options that the app can use.
 fn get_logbook_options(cli_args: ArgMatches) -> Result<logbook::Options, String> {
     let utc_offset = value_t!(cli_args, "utc_offset", f32).ok();
     let tags = values_t!(cli_args, "tags", String).ok();
