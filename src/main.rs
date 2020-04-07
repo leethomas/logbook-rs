@@ -33,18 +33,13 @@ fn main() {
             machine's offset."))
         .get_matches();
 
-    let result = to_logbook_options(matches)
-        .and_then(|options| {
-            logbook::Logbook::run(options)
-        });
-
-    match result {
+    match get_logbook_options(matches).and_then(logbook::Logbook::run) {
         Err(e) => println!("Error: {:?}", e),
-        Ok(_) => println!("Successfully wrote message.")
+        Ok(_) => println!("Successfully recorded message.")
     }
 }
 
-fn to_logbook_options(cli_args: ArgMatches) -> Result<logbook::Options, String> {
+fn get_logbook_options(cli_args: ArgMatches) -> Result<logbook::Options, String> {
     let utc_offset = value_t!(cli_args, "utc_offset", f32).ok();
     let tags = values_t!(cli_args, "tags", String).ok();
     // Unwrapping b/c this is required and should be enforced by clap before we
