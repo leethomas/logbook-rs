@@ -9,7 +9,7 @@ static APP_NAME: &str = "logbook";
 fn main() {
     let matches = App::new(APP_NAME)
         .version("0.1.0")
-        .author("Lee T. <lee.thomas@creditkarma.com>")
+        .author("Lee T. <leet944@gmail.com>")
         .about("Take daily timestamped notes")
         .arg(Arg::with_name("message")
             .short("m")
@@ -29,6 +29,7 @@ fn main() {
             .short("u")
             .long("utc_offset")
             .value_name("NUMBER")
+            .allow_hyphen_values(true)
             .help("The UTC offset to use for this message's timestamp. Defaults to the current
             machine's offset."))
         .get_matches();
