@@ -1,4 +1,4 @@
-use clap::{Arg, App, ArgMatches, value_t, values_t};
+use clap::{Arg, App, ArgMatches, SubCommand, value_t, values_t};
 
 mod config;
 mod entry;
@@ -32,6 +32,16 @@ fn main() {
             .allow_hyphen_values(true)
             .help("The UTC offset to use for this message's timestamp. Defaults to the current
             machine's offset."))
+        .subcommand(SubCommand::with_name("read")
+            .about("Read back your log entries")
+            .arg(Arg::with_name("after")
+                .long("after")
+                .value_name("YYYY|YYYY-MM|YYYY-MM-DD")
+                .help("Read all entries after this date"))
+            .arg(Arg::with_name("before")
+                .long("before")
+                .value_name("YYYY|YYYY-MM|YYYY-MM-DD")
+                .help("Read all entries after this date")))
         .get_matches();
 
     match get_logbook_options(matches).and_then(logbook::Logbook::run) {
