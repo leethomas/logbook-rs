@@ -12,6 +12,7 @@ chrono = "0.4"
 chrono-tz = "0.4"
 dirs = "2.0.2"
 itertools = "0.9"
+regex = "1"
 text_io = "0.1.8"
 
 [dependencies.clap]

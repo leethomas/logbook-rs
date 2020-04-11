@@ -54,9 +54,9 @@ fn main() {
 fn get_logbook_options(cli_args: ArgMatches) -> Result<logbook::Options, String> {
     let utc_offset = value_t!(cli_args, "utc_offset", f32).ok();
     let tags = values_t!(cli_args, "tags", String).ok();
-    // Unwrapping b/c this is required and should be enforced by clap before we
-    // reach here.
-    let message = value_t!(cli_args, "message", String).unwrap();
+    let message = value_t!(cli_args, "message", String).ok();
+    let before = value_t!(cli_args, "before", String).ok();
+    let after = value_t!(cli_args, "after", String).ok();
 
-    logbook::Options::new(message, tags, utc_offset)
+    logbook::Options::new(message, tags, utc_offset, (before, after))
 }
