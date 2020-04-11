@@ -6,7 +6,6 @@ use crate::entry;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 
-
 pub struct Logbook;
 
 impl <'a> Logbook {
