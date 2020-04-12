@@ -5,6 +5,7 @@ mod entry;
 mod logbook;
 
 static APP_NAME: &str = "logbook";
+static READ_CMD: &str = "read";
 
 fn main() {
     let matches = App::new(APP_NAME)
@@ -16,6 +17,8 @@ fn main() {
             .long("message")
             .value_name("TEXT")
             .help("The message to be recorded")
+            .required(true)
+            .conflicts_with("read")
             .takes_value(true))
         .arg(Arg::with_name("tags")
             .short("t")
@@ -36,11 +39,17 @@ fn main() {
             .arg(Arg::with_name("after")
                 .long("after")
                 .value_name("YYYY|YYYY-MM|YYYY-MM-DD")
-                .help("Read all entries after this date"))
+                .help("Read all entries after this date")
+                .conflicts_with("on"))
             .arg(Arg::with_name("before")
                 .long("before")
                 .value_name("YYYY|YYYY-MM|YYYY-MM-DD")
-                .help("Read all entries after this date")))
+                .conflicts_with("on")
+                .help("Read all entries after this date"))
+            .arg(Arg::with_name("on")
+                .long("on")
+                .value_name("YYYY-MM-DD")
+                .help("Read all entries on this date")))
         .get_matches();
 
     let result = match get_operation(&matches) {
@@ -48,8 +57,8 @@ fn main() {
         logbook::LogbookOperationKind::Write => run_writer(&matches)
     };
 
-    if result.is_err() {
-        println!("Error: {:?}", result.err().take());
+    if let Err(error) = result {
+        println!("Error: {}", error);
     }
 }
 
@@ -65,14 +74,21 @@ fn parse_writer_args(cli_args: &ArgMatches)
 
 fn parse_reader_args(cli_args: &ArgMatches) ->
     Result<logbook::reader::Options, String> {
-        let before = value_t!(cli_args, "before", String).ok();
-        let after = value_t!(cli_args, "after", String).ok();
+        let (before, after, on) = match cli_args.subcommand_matches(READ_CMD) {
+            Some(matches) => {
+                let b = value_t!(matches, "before", String).ok();
+                let a = value_t!(matches, "after", String).ok();
+                let o = value_t!(matches, "on", String).ok();
+                (b, a, o)
+            },
+            None => (None, None, None)
+        };
 
-        logbook::reader::Options::new(before, after)
+        logbook::reader::Options::new(before, after, on)
     }
 
 fn get_operation(cli_args: &ArgMatches) -> logbook::LogbookOperationKind {
-    if cli_args.is_present("read") {
+    if cli_args.is_present(READ_CMD) {
         logbook::LogbookOperationKind::Read
     } else {
         logbook::LogbookOperationKind::Write
